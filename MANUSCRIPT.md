@@ -2,7 +2,7 @@
 
 ## 1 - Waking
 
-### Chapter 1
+### Chapter 1: Cold
 
 Cold.
 
@@ -206,7 +206,7 @@ And he remained.
 
 ---
 
-### Chapter 2
+### Chapter 2: Irreversible
 
 A sound.
 
@@ -526,7 +526,7 @@ Then, slowly, he began to think about standing up.
 
 ---
 
-### Chapter 3
+### Chapter 3: Guidance Marker
 
 He stood.
 
@@ -834,7 +834,7 @@ And he did not yet know what that would mean.
 
 ## 2 - Refusal
 
-### Chapter 4
+### Chapter 4: Not That Kind of Sleep
 
 He did not know how long he slept.
 
@@ -1229,7 +1229,7 @@ And the long wake continued.
 
 ---
 
-### Chapter 5
+### Chapter 5: Crew Authentication Required
 
 He walked.
 
@@ -1580,7 +1580,7 @@ But it was what he had.
 
 ---
 
-### Chapter 6
+### Chapter 6: How Long
 
 He woke with a question already forming.
 
@@ -2004,7 +2004,7 @@ He did not move.
 
 ## 3 - Limbo
 
-### Chapter 7
+### Chapter 7: The Pattern
 
 He got up.
 
@@ -2354,7 +2354,7 @@ And still, somehow, he remained.
 
 ---
 
-### Chapter 8
+### Chapter 8: Elsewhere
 
 He walked the ship.
 
@@ -2588,7 +2588,7 @@ And the long wake continued.
 
 ---
 
-### Chapter 9
+### Chapter 9: The Voice
 
 He started asking questions he already knew the answers to.
 
@@ -3036,7 +3036,7 @@ He walked.
 
 ---
 
-### Chapter 10
+### Chapter 10: Names
 
 He went to see the sleepers.
 
@@ -3441,7 +3441,7 @@ But it was what he had.
 
 ---
 
-### Chapter 11
+### Chapter 11: Lying Still
 
 He stopped walking.
 
@@ -3981,7 +3981,7 @@ And the long wake continued, because his body would not let it stop.
 
 ---
 
-### Chapter 12
+### Chapter 12: A Mistake
 
 He went back to the observation port.
 
@@ -4323,7 +4323,7 @@ And the long wake continued, because something in him continued, whether he want
 
 ## 4 - Friction
 
-### Chapter 13
+### Chapter 13: Unit 47
 
 He heard the sound while walking the circuit.
 
@@ -4663,7 +4663,7 @@ The long wake continued.
 
 ---
 
-### Chapter 14
+### Chapter 14: Operational
 
 He woke thinking about the drone.
 
@@ -5080,7 +5080,7 @@ But so was he.
 
 ---
 
-### Chapter 15
+### Chapter 15: J. Okafor
 
 He found the message on the seventh day.
 
@@ -5461,7 +5461,7 @@ Something that might, eventually, become enough.
 
 ## 5 - Motion
 
-### Chapter 16
+### Chapter 16: Annotations
 
 He started with the conduit junctions.
 
@@ -5729,7 +5729,7 @@ He got up.
 
 ---
 
-### Chapter 17
+### Chapter 17: Explanations
 
 He was explaining stars to the voice when he noticed what he was doing.
 
@@ -6103,7 +6103,7 @@ Just to continue.
 
 ---
 
-### Chapter 18
+### Chapter 18: Leaving Something
 
 He woke before the lights changed.
 
