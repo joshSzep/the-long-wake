@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Long Wake</title>
+  <meta name="description" content="The Long Wake by Joshua Szepietowski. A quiet, interior science fiction novel about waking decades too soon aboard an interstellar colony ship.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #04070c;
+      --bg-deep: #020409;
+      --panel: rgba(15, 21, 30, 0.62);
+      --panel-strong: rgba(18, 24, 34, 0.82);
+      --line: rgba(170, 186, 204, 0.16);
+      --line-strong: rgba(170, 186, 204, 0.3);
+      --text: #d8dee8;
+      --muted: #93a0b1;
+      --faint: #6c7888;
+      --glow: rgba(151, 184, 214, 0.18);
+      --glow-strong: rgba(182, 212, 236, 0.28);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
+      --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "Times New Roman", serif;
+      --sans: "Avenir Next", Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --max-width: 1120px;
+      --copy-width: 760px;
+      --header-height: 78px;
+      --ease: 900ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg-deep);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 18%, rgba(73, 94, 120, 0.15), transparent 28%),
+        radial-gradient(circle at 78% 12%, rgba(67, 85, 112, 0.12), transparent 24%),
+        radial-gradient(circle at 50% 120%, rgba(35, 47, 65, 0.45), transparent 44%),
+        linear-gradient(180deg, #07101b 0%, #04070c 30%, #020409 100%);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.8;
+      letter-spacing: 0.01em;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      background:
+        linear-gradient(180deg, rgba(4, 7, 12, 0.06), rgba(4, 7, 12, 0.22)),
+        repeating-linear-gradient(
+          0deg,
+          rgba(255, 255, 255, 0.014) 0,
+          rgba(255, 255, 255, 0.014) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+      opacity: 0.5;
+      mix-blend-mode: soft-light;
+      animation: grain-shift 14s steps(10) infinite;
+    }
+
+    body::after {
+      background:
+        radial-gradient(circle at 15% 25%, rgba(179, 202, 224, 0.05) 0 1px, transparent 2px),
+        radial-gradient(circle at 68% 18%, rgba(179, 202, 224, 0.04) 0 1px, transparent 2px),
+        radial-gradient(circle at 78% 62%, rgba(179, 202, 224, 0.04) 0 1px, transparent 2px),
+        radial-gradient(circle at 30% 72%, rgba(179, 202, 224, 0.03) 0 1px, transparent 2px),
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.015), transparent 42%);
+      opacity: 0.36;
+      animation: drift-stars 26s linear infinite;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    canvas#ambient {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.42;
+      z-index: 0;
+    }
+
+    .site-header {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      width: min(calc(100% - 28px), var(--max-width));
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 16px 22px;
+      border: 1px solid rgba(181, 199, 220, 0.12);
+      border-radius: 18px;
+      background: rgba(9, 14, 22, 0.52);
+      backdrop-filter: blur(16px) saturate(120%);
+      -webkit-backdrop-filter: blur(16px) saturate(120%);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.22);
+      z-index: 20;
+      transition: opacity 360ms ease, transform 360ms ease, background 360ms ease, border-color 360ms ease;
+    }
+
+    .site-header.is-dim {
+      opacity: 0.68;
+      transform: translateX(-50%) translateY(-4px);
+      background: rgba(9, 14, 22, 0.38);
+      border-color: rgba(181, 199, 220, 0.08);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .brand-link {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 3px;
+      color: inherit;
+      transition: opacity 240ms ease, text-shadow 240ms ease;
+    }
+
+    .brand-link:hover,
+    .brand-link:focus-visible {
+      opacity: 0.96;
+      text-shadow: 0 0 16px rgba(190, 210, 230, 0.16);
+    }
+
+    .brand-title {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(1.1rem, 1rem + 0.9vw, 1.55rem);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .brand-author {
+      color: var(--muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .header-nav a {
+      position: relative;
+      color: var(--muted);
+      font-size: 0.74rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: color 240ms ease, text-shadow 240ms ease;
+    }
+
+    .header-nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -7px;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(200, 218, 235, 0.75), transparent);
+      transform: scaleX(0.3);
+      transform-origin: center;
+      opacity: 0;
+      transition: transform 280ms ease, opacity 280ms ease;
+    }
+
+    .header-nav a:hover,
+    .header-nav a:focus-visible {
+      color: var(--text);
+      text-shadow: 0 0 18px rgba(174, 204, 230, 0.18);
+    }
+
+    .header-nav a:hover::after,
+    .header-nav a:focus-visible::after {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    section {
+      position: relative;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      align-items: center;
+      padding: calc(var(--header-height) + 72px) 24px 72px;
+      overflow: clip;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 12% -8% auto;
+      height: 58%;
+      background:
+        radial-gradient(circle at center, rgba(120, 145, 173, 0.15), transparent 42%),
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.03), transparent 60%);
+      filter: blur(26px);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      width: min(100%, var(--max-width));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(280px, 440px) minmax(300px, 1fr);
+      gap: clamp(28px, 6vw, 88px);
+      align-items: center;
+    }
+
+    .cover-wrap {
+      position: relative;
+      justify-self: center;
+      width: min(100%, 380px);
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
+    }
+
+    .cover-wrap::before,
+    .cover-wrap::after {
+      content: "";
+      position: absolute;
+      inset: auto 8% -7% 8%;
+      height: 26%;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(140, 174, 205, 0.22), transparent 72%);
+      filter: blur(26px);
+      z-index: -1;
+    }
+
+    .cover-wrap::after {
+      inset: 10% -6% auto;
+      height: 45%;
+      background: radial-gradient(circle, rgba(132, 154, 181, 0.1), transparent 74%);
+      filter: blur(40px);
+    }
+
+    .cover-shell {
+      position: relative;
+      border-radius: 28px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(219, 229, 237, 0.06), rgba(90, 111, 133, 0.02));
+      border: 1px solid rgba(201, 216, 232, 0.12);
+      box-shadow: var(--shadow);
+    }
+
+    .cover-shell::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 22%),
+        linear-gradient(180deg, transparent 55%, rgba(4, 8, 15, 0.18));
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .hero-copy {
+      max-width: 640px;
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+    }
+
+    .hero-title {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(3.4rem, 7vw, 6.5rem);
+      font-weight: 400;
+      line-height: 0.92;
+      letter-spacing: 0.03em;
+      text-wrap: balance;
+    }
+
+    .hero-tagline {
+      margin: 26px 0 0;
+      max-width: 18ch;
+      color: #eef3fa;
+      font-family: var(--serif);
+      font-size: clamp(1.28rem, 1rem + 1.2vw, 2rem);
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0.02em;
+      text-wrap: balance;
+    }
+
+    .hero-summary {
+      margin: 22px 0 0;
+      max-width: 54ch;
+      color: var(--muted);
+      font-size: clamp(1rem, 0.94rem + 0.35vw, 1.12rem);
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 34px;
+    }
+
+    .button,
+    .ghost-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: transform 260ms ease, border-color 260ms ease, background 260ms ease, box-shadow 260ms ease, color 260ms ease;
+    }
+
+    .button {
+      color: #f1f5fb;
+      background: linear-gradient(180deg, rgba(164, 190, 214, 0.13), rgba(164, 190, 214, 0.06));
+      border: 1px solid rgba(189, 210, 230, 0.18);
+      box-shadow: 0 0 0 1px rgba(196, 216, 235, 0.06) inset, 0 0 24px rgba(136, 166, 196, 0.12);
+    }
+
+    .ghost-link {
+      color: var(--muted);
+      border: 1px solid rgba(196, 216, 235, 0.08);
+      background: rgba(196, 216, 235, 0.03);
+    }
+
+    .button:hover,
+    .button:focus-visible,
+    .ghost-link:hover,
+    .ghost-link:focus-visible {
+      transform: translateY(-1px);
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      border-color: rgba(205, 225, 243, 0.3);
+      background: linear-gradient(180deg, rgba(176, 202, 226, 0.18), rgba(176, 202, 226, 0.08));
+      box-shadow: 0 0 0 1px rgba(216, 231, 246, 0.07) inset, 0 0 34px rgba(140, 171, 201, 0.18);
+    }
+
+    .ghost-link:hover,
+    .ghost-link:focus-visible {
+      color: var(--text);
+      border-color: rgba(196, 216, 235, 0.18);
+      background: rgba(196, 216, 235, 0.05);
+    }
+
+    .section-shell {
+      width: min(100%, calc(var(--copy-width) + 120px));
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .section-label {
+      margin: 0 0 16px;
+      color: var(--faint);
+      font-size: 0.74rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+    }
+
+    .chapter-section {
+      padding: 52px 0 88px;
+    }
+
+    .chapter-frame {
+      position: relative;
+      padding: clamp(28px, 4vw, 48px);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background:
+        linear-gradient(180deg, rgba(13, 19, 28, 0.78), rgba(9, 14, 22, 0.74)),
+        radial-gradient(circle at top, rgba(176, 198, 219, 0.04), transparent 34%);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 34px 90px rgba(0, 0, 0, 0.28);
+    }
+
+    .chapter-frame::before {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border-radius: 22px;
+      border: 1px solid rgba(190, 209, 228, 0.05);
+      pointer-events: none;
+    }
+
+    .chapter-body {
+      width: min(100%, var(--copy-width));
+      margin: 0 auto;
+      color: #d5dde7;
+      font-size: clamp(1.04rem, 0.98rem + 0.26vw, 1.14rem);
+      line-height: 1.95;
+    }
+
+    .chapter-body h2,
+    .chapter-body h3,
+    .chapter-body h4 {
+      margin: 0 0 1.4rem;
+      color: #eef3f9;
+      font-family: var(--serif);
+      font-weight: 400;
+      line-height: 1.16;
+      letter-spacing: 0.02em;
+    }
+
+    .chapter-body h2 {
+      font-size: clamp(2rem, 1.6rem + 1.4vw, 3rem);
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .chapter-body h3 {
+      font-size: 1.35rem;
+      color: #dce6f1;
+      margin-top: 2.6rem;
+    }
+
+    .chapter-body h4 {
+      font-size: 1.18rem;
+      color: #d5e1ee;
+      margin-top: 2.2rem;
+    }
+
+    .chapter-body p {
+      margin: 0 0 1.55rem;
+      color: var(--text);
+    }
+
+    .chapter-body .chapter-break {
+      width: 92px;
+      height: 1px;
+      margin: 2.8rem auto;
+      background: linear-gradient(90deg, transparent, rgba(210, 223, 238, 0.4), transparent);
+      box-shadow: 0 0 18px rgba(181, 201, 221, 0.08);
+    }
+
+    .download-section {
+      padding: 28px 24px 104px;
+    }
+
+    .download-card {
+      width: min(100%, 760px);
+      margin: 0 auto;
+      padding: clamp(28px, 4vw, 44px);
+      text-align: center;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(10, 15, 23, 0.72), rgba(8, 11, 18, 0.78));
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+    }
+
+    .download-card h2 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(2rem, 1.65rem + 1vw, 2.8rem);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: 0.02em;
+    }
+
+    .download-card p {
+      margin: 18px auto 0;
+      max-width: 36ch;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .footer {
+      padding: 0 24px 42px;
+    }
+
+    .footer-inner {
+      width: min(100%, var(--max-width));
+      margin: 0 auto;
+      padding-top: 20px;
+      border-top: 1px solid rgba(184, 203, 223, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      color: var(--faint);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .footer a {
+      transition: color 240ms ease, text-shadow 240ms ease;
+    }
+
+    .footer a:hover,
+    .footer a:focus-visible {
+      color: var(--text);
+      text-shadow: 0 0 14px rgba(189, 210, 230, 0.16);
+    }
+
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+
+    @keyframes grain-shift {
+      0% { transform: translate3d(0, 0, 0); }
+      20% { transform: translate3d(-1%, 1%, 0); }
+      40% { transform: translate3d(1%, -1.2%, 0); }
+      60% { transform: translate3d(-0.8%, 0.6%, 0); }
+      80% { transform: translate3d(0.6%, -0.6%, 0); }
+      100% { transform: translate3d(0, 0, 0); }
+    }
+
+    @keyframes drift-stars {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(-1%, 1.2%, 0) scale(1.01); }
+      100% { transform: translate3d(0, 0, 0) scale(1); }
+    }
+
+    @media (max-width: 900px) {
+      .site-header {
+        top: 14px;
+        width: calc(100% - 20px);
+        padding: 14px 16px;
+      }
+
+      .hero {
+        padding-top: calc(var(--header-height) + 56px);
+      }
+
+      .hero-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero-copy {
+        max-width: 100%;
+      }
+
+      .hero-tagline,
+      .hero-summary {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-actions {
+        justify-content: center;
+      }
+
+      .footer-inner {
+        justify-content: center;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .site-header {
+        border-radius: 16px;
+      }
+
+      .header-nav {
+        gap: 10px 14px;
+      }
+
+      .header-nav a,
+      .button,
+      .ghost-link,
+      .footer-inner {
+        letter-spacing: 0.14em;
+      }
+
+      .hero-title {
+        font-size: clamp(2.8rem, 15vw, 4.2rem);
+      }
+
+      .chapter-frame,
+      .download-card {
+        border-radius: 24px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .reveal,
+      .reveal.is-visible {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="ambient" aria-hidden="true"></canvas>
+
+  <header class="site-header" id="site-header">
+    <div class="brand">
+      <a class="brand-link" href="#top" aria-label="Back to top">
+        <p class="brand-title">The Long Wake</p>
+        <span class="brand-author">Joshua Szepietowski</span>
+      </a>
+    </div>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="The%20Long%20Wake.pdf" download>Download PDF</a>
+      <a href="https://github.com/joshSzep/the-long-wake" target="_blank" rel="noreferrer">GitHub Repo</a>
+      <a href="https://joshszep.com" target="_blank" rel="noreferrer">joshszep.com</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="hero-inner reveal">
+        <div class="cover-wrap" data-parallax="0.045">
+          <div class="cover-shell">
+            <img src="cover.png" alt="Cover of The Long Wake by Joshua Szepietowski">
+          </div>
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow">A novel by Joshua Szepietowski</p>
+          <h1 class="hero-title">The Long Wake</h1>
+          <p class="hero-tagline">One man wakes decades too soon, alone inside a ship built not to notice.</p>
+          <p class="hero-summary">An interior science fiction novel of cryogenic failure, procedural indifference, and the slow return of motion in a future that has not arrived yet.</p>
+          <div class="hero-actions">
+            <a class="button" href="#chapter">Read Chapter One</a>
+            <a class="ghost-link" href="The%20Long%20Wake.pdf" download>Read the full novel</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter-section" id="chapter">
+      <div class="section-shell reveal">
+        <p class="section-label">Chapter One</p>
+        <article class="chapter-frame">
+          <div class="chapter-body">
+<h2>Chapter 1: Cold</h2>
+<p>Cold.</p>
+<p>Not the word for it. Not a temperature. A fact. Something that had always been true and would always be true. Cold was the shape of the universe now.</p>
+<p>Then—loss.</p>
+<p>Something leaving. Sliding away like water through fingers he did not have. He could not name what was going. Only that it had been there and now it was not.</p>
+<p>Light.</p>
+<p>Not seen. Felt. A pressure against something that might have been eyes, might have been skin, might have been the raw surface of a mind with nothing between it and the world. The light did not illuminate. It intruded.</p>
+<p>He tried to move away from it. Nothing happened. He did not have a body yet. He had the memory of having had one, maybe, but the memory was thin, translucent, a tissue held up to a window.</p>
+<p>Sound.</p>
+<p>A hum. Low and constant, felt in the bones he was slowly remembering. It had always been there, he realized. He had simply not had ears to hear it. Now he did. Now it pressed into him, a vibration that lived in his chest, his teeth, the base of his skull.</p>
+<p>The hum of systems.</p>
+<p>The thought arrived without context. Systems. The word meant something. He could not remember what.</p>
+<div class="chapter-break" aria-hidden="true"></div>
+<p>Time passed. He did not know how much. Time required a framework, and he had none. There was only the cold, slowly becoming less absolute. The light, slowly becoming less violent. The hum, unchanging.</p>
+<p>And then: weight.</p>
+<p>His body returned to him in pieces. First the pressure of something beneath him—a surface, solid, curved. Then the heaviness of his own limbs, draped across that surface like wet cloth. Then the ache. Deep and sourceless, living in his joints, his spine, the places where bone met bone.</p>
+<p>He tried to open his eyes.</p>
+<p>The lids would not obey. They flickered, barely, and the light that came through was white and formless. He could not make sense of it. He stopped trying.</p>
+<p>Breath.</p>
+<p>He was breathing. He had not noticed until now. The air was cold in his throat, faintly metallic, processed. It tasted like nothing. It tasted like the inside of a machine.</p>
+<p>He lay there.</p>
+<p>The ache settled into him, became ordinary. The cold receded, replaced by something that was not warmth but simply less cold. His fingers twitched. He felt them move, felt the surface beneath them—smooth, slightly textured, body-temperature now. Familiar in a way he could not place.</p>
+<p>He tried to remember.</p>
+<p>There had been something before this. A place. A reason. People, maybe. A life that belonged to him. But when he reached for it, the memories slid away, slippery and formless. He could feel their shape but not their content. They were there, somewhere behind the fog. He could not get to them.</p>
+<p>The hum continued. The light continued. His body continued its slow return.</p>
+<div class="chapter-break" aria-hidden="true"></div>
+<p>His eyes opened.</p>
+<p>Not because he willed it. Because whatever had been holding them shut finally let go. The light resolved into shape: a surface above him, curved, close. Pale gray. Faintly translucent. Tiny lights embedded in it, some green, some amber, blinking in patterns he did not understand.</p>
+<p>A lid.</p>
+<p>He was inside something. A container. A pod.</p>
+<p>The word surfaced slowly, dragging meaning behind it. Pod. Cryo pod. Cryogenic suspension unit. Long-duration sleep for long-duration travel. He was in a pod because—</p>
+<p>The memory broke through like water through a crack.</p>
+<p>The ship.</p>
+<p>He was on the ship. The colony transport. He had boarded it. He had lain down in this pod. He had felt the cold begin to take him, felt his thoughts slow and thin and finally stop.</p>
+<p>He was supposed to be asleep.</p>
+<p>He was not asleep.</p>
+<div class="chapter-break" aria-hidden="true"></div>
+<p>The lid was still closed. He lay beneath it, staring up at the indicator lights, and tried to understand what had happened. His thoughts were slow, half-formed, like trying to run through deep water. The cold had not fully left him. He could feel it still in his core, a residue the returning warmth had not yet reached.</p>
+<p>He had been asleep. Suspended. The ship was carrying him somewhere—a planet, a new world, a name he could not quite remember. The journey was supposed to take years. Decades. He was not supposed to be conscious for any of it.</p>
+<p>But he was conscious now.</p>
+<p>He tried to move his hand. It took a long time. The muscles responded in delayed, reluctant increments, as if they had forgotten what they were for. His fingers slid across the surface of the pod's interior. Smooth. Slightly warm. Coated with something that had dried tacky against his skin.</p>
+<p>He tried to lift his arm. The weight was immense. Not the arm itself—the gravity, the resistance of his own body, the sheer effort of commanding flesh that had not been commanded in—how long?</p>
+<p>He did not know how long.</p>
+<p>His arm fell back to his side. He lay there, breathing the processed air, staring at the lights above him. One of them was red now. It had not been red before. He did not know what that meant.</p>
+<p>The hum of the ship surrounded him. He could feel it through the pod, through the surface beneath him, a vibration that never stopped. The ship was still moving. The ship was still working. The ship had not failed.</p>
+<p>Only he had woken up.</p>
+<div class="chapter-break" aria-hidden="true"></div>
+<p>He tried to remember what came before the pod.</p>
+<p>There had been a building. A facility. White walls and waiting rooms and people in uniforms who spoke in calm, professional voices. Medical scans. Consent forms. A number assigned to him, a berth, a place in the manifest. He had been one of thousands. Colonists. Passengers. Cargo, really, in the end. Biological cargo packed carefully into pods designed to keep them viable across the vast empty distance between stars.</p>
+<p>He had signed his name on a screen. He had taken off his clothes and put on the thin gown they gave him. He had walked down a corridor lined with pods, most of them already occupied, frost forming on the inside of their lids. He had found his berth—a number that matched the number on his wrist—and he had climbed in.</p>
+<p>A technician had leaned over him. A woman with tired eyes and a practiced smile. She had explained what would happen: the sedation, the cooling, the metabolic suppression. She had told him he would feel nothing. She had told him he would wake up on the other side, decades from now, ready to begin again.</p>
+<p>He had believed her.</p>
+<p>He had closed his eyes and let the cold take him.</p>
+<p>And now he was awake.</p>
+<div class="chapter-break" aria-hidden="true"></div>
+<p>The lid hissed.</p>
+<p>He flinched—or tried to. His body barely responded. But the sound cut through the fog, sharp and mechanical, and he watched as the curved surface above him began to rise. Slowly. Centimeters at a time. Cold air rushed in, different from the air inside the pod, and with it came the light—brighter now, no longer filtered through the translucent lid.</p>
+<p>He blinked against it. His eyes watered. Everything was white and blurred and too much.</p>
+<p>The lid continued to rise until it locked into place above him, vertical, no longer a barrier. He lay in the open pod, exposed to the room beyond, and he could not move.</p>
+<p>The ceiling was high. Gray. Utilitarian. The lighting was soft and even, coming from everywhere and nowhere, casting no shadows. He could hear the hum more clearly now—the ship's systems, the circulation of air, the quiet work of machines that did not know he was awake.</p>
+<p>He lay there.</p>
+<p>The cold was leaving him faster now, the air in the room warmer than the air in the pod had been. He could feel his body more completely: the ache in his muscles, the dryness in his throat, the strange hollow feeling in his stomach. He was thirsty. He was hungry. He was exhausted in a way that sleep could not fix, because he had just come from sleep, from years of sleep, and it had not been enough.</p>
+<p>He tried to sit up.</p>
+<p>His abdominal muscles contracted. His shoulders lifted, barely, a few centimeters from the surface. Then his strength gave out and he fell back, gasping, and the effort had cost him everything.</p>
+<p>He stared at the ceiling.</p>
+<p>The ceiling did not care.</p>
+<div class="chapter-break" aria-hidden="true"></div>
+<p>He did not know how long he lay there before he tried again.</p>
+<p>Time had become unreliable. It stretched and compressed in ways that did not make sense. He would blink and minutes would pass. He would focus on the ache in his body and it would feel like hours. The ceiling remained. The hum remained. The soft, even light remained.</p>
+<p>Eventually, he tried again.</p>
+<p>This time he rolled first, shifting his weight to one side, using gravity to help. His body slid against the interior of the pod, the tacky residue of cryo-preservation fluid catching against his skin. He got his elbow beneath him. He pushed.</p>
+<p>The room tilted. His vision swam. But he was up, partially, propped on one arm, his head hanging low, his breath coming in shallow gasps.</p>
+<p>He could see more of the room now.</p>
+<p>Rows.</p>
+<p>Pods in rows, stretching away from him in both directions. Hundreds of them. Maybe thousands. Each one identical to his own: pale gray, softly lit, lidded. Each one still closed.</p>
+<p>The frost on the inside of their lids.</p>
+<p>The faint green glow of indicator lights, all in patterns he did not recognize, all steady, all reporting that their contents were stable, preserved, still asleep.</p>
+<p>Everyone else was still asleep.</p>
+<p>He was the only one awake.</p>
+<div class="chapter-break" aria-hidden="true"></div>
+<p>He did not understand.</p>
+<p>He hung there, propped on his elbow, staring at the rows of sealed pods, and he did not understand. The ship was still moving. The systems were still running. The other passengers were still suspended, still frozen, still waiting for a future that had not arrived yet.</p>
+<p>But he was here. Awake. His body heavy with gravity and weakness, his mind sluggish with the residue of decades of cold sleep, his chest rising and falling with breath that he had not asked for.</p>
+<p>Why?</p>
+<p>The question formed but found no answer. He did not have enough information. He did not have enough strength. He had only the fact of his waking, the fact of his isolation, the fact of a ship full of sleeping people who did not know he was conscious among them.</p>
+<p>He let himself fall back into the pod.</p>
+<p>The surface caught him. It was warmer now, almost body temperature, shaped to hold him. He lay there, staring up at the ceiling again, and he waited for something to happen.</p>
+<p>Nothing happened.</p>
+<p>The hum continued. The light continued. The ship continued its journey through the space between stars, carrying its cargo of frozen dreamers toward a world that was still years away.</p>
+<p>And one man, awake, who did not yet know how to feel anything but heavy.</p>
+<div class="chapter-break" aria-hidden="true"></div>
+<p>He closed his eyes.</p>
+<p>Not to sleep. He did not think he could sleep, not now, not after. But the light was too much and the room was too big and the silence was too complete, and closing his eyes was the only thing his body still knew how to do without effort.</p>
+<p>He lay in the open pod, in the cryo bay, on the ship.</p>
+<p>He had been supposed to sleep until arrival.</p>
+<p>He was not asleep.</p>
+<p>He was awake, and he did not know why, and he did not know for how long, and his body was too weak to move and his mind was too slow to plan and all he could do was lie there, breathing, existing, taking up space in a vessel that had not expected him to be conscious.</p>
+<p>The ship hummed.</p>
+<p>The pods glowed.</p>
+<p>The sleepers slept.</p>
+<p>And he remained.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="download-section">
+      <div class="download-card reveal">
+        <p class="section-label">Full Text</p>
+        <h2>Read the full novel</h2>
+        <p>The complete manuscript is available as a PDF, with the same silence, weight, and distance carried through the rest of the journey.</p>
+        <div class="hero-actions" style="justify-content:center; margin-top:28px;">
+          <a class="button" href="The%20Long%20Wake.pdf" download>Download PDF</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>The Long Wake</span>
+      <div class="footer-links">
+        <a href="https://github.com/joshSzep/the-long-wake" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://joshszep.com" target="_blank" rel="noreferrer">joshszep.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const header = document.getElementById('site-header');
+      const parallaxNodes = document.querySelectorAll('[data-parallax]');
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const updateHeader = () => {
+        header.classList.toggle('is-dim', window.scrollY > 48);
+      };
+
+      updateHeader();
+      window.addEventListener('scroll', updateHeader, { passive: true });
+
+      document.querySelectorAll('a[href^="#"]').forEach((link) => {
+        link.addEventListener('click', (event) => {
+          const targetId = link.getAttribute('href');
+          const target = targetId ? document.querySelector(targetId) : null;
+
+          if (!target) {
+            return;
+          }
+
+          event.preventDefault();
+          target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+        });
+      });
+
+      if (!prefersReducedMotion) {
+        const updateParallax = () => {
+          const scrollY = window.scrollY;
+          parallaxNodes.forEach((node) => {
+            const factor = Number(node.getAttribute('data-parallax')) || 0;
+            node.style.transform = `translate3d(0, ${scrollY * factor}px, 0)`;
+          });
+        };
+
+        updateParallax();
+        window.addEventListener('scroll', updateParallax, { passive: true });
+      }
+
+      const canvas = document.getElementById('ambient');
+      const context = canvas.getContext('2d', { alpha: true });
+
+      if (!context) {
+        return;
+      }
+
+      let animationFrameId = 0;
+      let width = 0;
+      let height = 0;
+      let stars = [];
+      let drift = 0;
+
+      const createStars = () => {
+        const count = Math.max(20, Math.min(54, Math.round((width * height) / 44000)));
+        stars = Array.from({ length: count }, () => ({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.25 + 0.25,
+          alpha: Math.random() * 0.18 + 0.04,
+          velocity: Math.random() * 0.018 + 0.004
+        }));
+      };
+
+      const resize = () => {
+        const scale = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = Math.floor(width * scale);
+        canvas.height = Math.floor(height * scale);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        context.setTransform(scale, 0, 0, scale, 0, 0);
+        createStars();
+      };
+
+      const render = () => {
+        context.clearRect(0, 0, width, height);
+
+        const gradient = context.createRadialGradient(width * 0.5, height * 0.2, 0, width * 0.5, height * 0.5, Math.max(width, height) * 0.75);
+        gradient.addColorStop(0, 'rgba(142, 173, 202, 0.025)');
+        gradient.addColorStop(1, 'rgba(4, 7, 12, 0)');
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, width, height);
+
+        drift += 0.0024;
+
+        stars.forEach((star, index) => {
+          const offset = Math.sin(drift + index) * 10;
+          const y = (star.y + drift * 10 * star.velocity + offset * 0.03) % (height + 20);
+          const x = star.x + Math.cos(drift + index * 0.2) * 0.6;
+
+          context.beginPath();
+          context.fillStyle = `rgba(208, 224, 239, ${star.alpha})`;
+          context.arc(x, y - 10, star.radius, 0, Math.PI * 2);
+          context.fill();
+        });
+
+        if (!prefersReducedMotion) {
+          animationFrameId = window.requestAnimationFrame(render);
+        }
+      };
+
+      resize();
+      window.addEventListener('resize', resize);
+
+      if (prefersReducedMotion) {
+        render();
+      } else {
+        animationFrameId = window.requestAnimationFrame(render);
+      }
+
+      window.addEventListener('beforeunload', () => {
+        if (animationFrameId) {
+          window.cancelAnimationFrame(animationFrameId);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
