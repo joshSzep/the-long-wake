@@ -119,6 +119,8 @@ cat <<'EOF'
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Long Wake</title>
   <meta name="description" content="The Long Wake by Joshua Szepietowski. A quiet, interior science fiction novel about waking decades too soon aboard an interstellar colony ship.">
+  <link rel="icon" type="image/png" href="cover.png">
+  <link rel="apple-touch-icon" href="cover.png">
   <style>
     :root {
       color-scheme: dark;
