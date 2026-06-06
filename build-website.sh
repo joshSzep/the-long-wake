@@ -7,9 +7,11 @@ OUTPUT_DIR="$SCRIPT_DIR/website"
 CHAPTER_SOURCE="$SCRIPT_DIR/chapters/01-waking/01.md"
 COVER_SOURCE="$SCRIPT_DIR/cover.png"
 PDF_SOURCE="$SCRIPT_DIR/The Long Wake.pdf"
+EPUB_SOURCE="$SCRIPT_DIR/The Long Wake.epub"
 OUTPUT_HTML="$OUTPUT_DIR/index.html"
 OUTPUT_COVER="$OUTPUT_DIR/cover.png"
 OUTPUT_PDF="$OUTPUT_DIR/The Long Wake.pdf"
+OUTPUT_EPUB="$OUTPUT_DIR/The Long Wake.epub"
 
 require_file() {
     local path="$1"
@@ -97,12 +99,14 @@ markdown_to_html() {
 require_file "$CHAPTER_SOURCE"
 require_file "$COVER_SOURCE"
 require_file "$PDF_SOURCE"
+require_file "$EPUB_SOURCE"
 
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 
 cp "$COVER_SOURCE" "$OUTPUT_COVER"
 cp "$PDF_SOURCE" "$OUTPUT_PDF"
+cp "$EPUB_SOURCE" "$OUTPUT_EPUB"
 
 CHAPTER_HTML="$(markdown_to_html "$CHAPTER_SOURCE")"
 
@@ -779,6 +783,7 @@ cat <<'EOF'
     </div>
     <nav class="header-nav" aria-label="Primary">
       <a href="The%20Long%20Wake.pdf" download>Download PDF</a>
+      <a href="The%20Long%20Wake.epub" download>Download EPUB</a>
       <a href="https://github.com/joshSzep/the-long-wake" target="_blank" rel="noreferrer">GitHub Repo</a>
       <a href="https://joshszep.com" target="_blank" rel="noreferrer">joshszep.com</a>
     </nav>
@@ -799,7 +804,8 @@ cat <<'EOF'
           <p class="hero-summary">An interior science fiction novel of cryogenic failure, procedural indifference, and the slow return of motion in a future that has not arrived yet.</p>
           <div class="hero-actions">
             <a class="button" href="#chapter">Read Chapter One</a>
-            <a class="ghost-link" href="The%20Long%20Wake.pdf" download>Read the full novel</a>
+            <a class="ghost-link" href="The%20Long%20Wake.pdf" download>Download PDF</a>
+            <a class="ghost-link" href="The%20Long%20Wake.epub" download>Download EPUB</a>
           </div>
         </div>
       </div>
@@ -822,9 +828,10 @@ cat <<'EOF'
       <div class="download-card reveal">
         <p class="section-label">Full Text</p>
         <h2>Read the full novel</h2>
-        <p>The complete manuscript is available as a PDF, with the same silence, weight, and distance carried through the rest of the journey.</p>
+        <p>The complete manuscript is available as a PDF or EPUB, with the same silence, weight, and distance carried through the rest of the journey.</p>
         <div class="hero-actions" style="justify-content:center; margin-top:28px;">
           <a class="button" href="The%20Long%20Wake.pdf" download>Download PDF</a>
+          <a class="ghost-link" href="The%20Long%20Wake.epub" download>Download EPUB</a>
         </div>
       </div>
     </section>
